@@ -85,22 +85,25 @@ const handoff = () => {
   }
 }
 onMounted(() => {
-  console.log(pic.value)
+  // console.log(pic.value)
 })
 </script>
 
 <style lang="less" scoped>
 .nav {
   // width: 250px;
+  height: calc(100vh - 75px);
 }
 
-.el-menu-vertical-demo:not(.el-menu--collapse){
+.el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
-  height: 100%;
+  height: calc(100% - 30px);
 }
-/deep/ .el-menu--collapse{
-  height: 100%;
+
+/deep/ .el-menu--collapse {
+  height: calc(100% - 30px);
 }
+
 /deep/.el-radio-group {
   height: 30px;
   background-color: #4a5064;

@@ -6,7 +6,7 @@
       <span>Version：0.0.0</span>
     </div>
     <div class="right">
-      <div class="user">欢迎你：{{ }}</div>
+      <div class="user">欢迎你：{{ username }}</div>
       <img class="fullScreen" src="/img/fullscreen.png" alt="">
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -35,9 +35,18 @@ export default {
 <script lang="ts" setup>
 // @ts-ignore
 import { useRouter } from 'vue-router'
+// @ts-ignore
 import { ArrowDown } from '@element-plus/icons-vue'
+// @ts-ignore
+import { useStore } from 'vuex'
+// vuex
+const Store = useStore()
+// Router
 const Router = useRouter()
-const GoTo = (path:string) => {
+// 用户名
+const username = Store.state.username
+
+const GoTo = (path: string) => {
   Router.push(path)
   localStorage.removeItem('token')
 }
@@ -92,6 +101,11 @@ const GoTo = (path:string) => {
       width: 28px;
       height: 28px;
       padding-right: 8px;
+    }
+
+    /deep/.el-dropdown-link {
+      display: flex;
+      align-items: center;
     }
 
     .avatar {
