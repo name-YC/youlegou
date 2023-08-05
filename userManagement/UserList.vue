@@ -2,12 +2,12 @@
   <div id="UserList">
     <div class="search">
       <el-input
-          v-model="searchVal"
-          placeholder="Please input"
+          v-model.trim="searchVal"
+          placeholder="请输入用户名"
           class="input-with-select"
       >
         <template #append>
-          <el-button :icon="Search"/>
+          <el-button :icon="Search" @click="searchAccount"/>
         </template>
       </el-input>
       <el-button type="primary" @click="dialogFormVisible = true">添加用户</el-button>
@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column label="状态" width="200">
         <template #default="scope">
-          <el-switch v-model="scope.row.mg_state"/>
+          <el-switch v-model="scope.row.mg_state" @change="UpdateStatus(scope.row)"/>
         </template>
       </el-table-column>
       <el-table-column label="操作">
@@ -55,7 +55,7 @@
               <span style="font-size: 12px">分配角色</span>
             </template>
             <template #reference>
-              <el-button type="warning" :icon="Setting" round/>
+              <el-button type="warning" :icon="Setting" @click="Roles(scope.row)" round/>
             </template>
           </el-popover>
         </template>
@@ -75,7 +75,7 @@
         @current-change="handleCurrentChange"
     />
     <!--  添加对话框-->
-    <el-dialog v-model="dialogFormVisible" title="添加">
+    <el-dialog v-model="dialogFormVisible" title="添加用户">
       <el-form :model="form" :rules="rules" ref="ruleFormRef">
         <el-form-item label="用户名" :label-width="formLabelWidth" prop="account">
           <el-input v-model="form.account" autocomplete="off"/>
@@ -99,6 +99,60 @@
       <span class="dialog-footer">
         <el-button @click="resetForm(ruleFormRef)">Cancel</el-button>
         <el-button type="primary" @click="AddUser(ruleFormRef)">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+    <!--    编辑对话框-->
+    <el-dialog v-model="dialogFormVisibleEdit" title="修改用户信息">
+      <el-form :model="formEdit" :rules="rulesEdit" ref="ruleFormRef">
+        <el-form-item label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="formEdit.account" autocomplete="off" disabled/>
+        </el-form-item>
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="mailbox">
+          <el-input
+              v-model="formEdit.mailbox"
+              placeholder=""
+          />
+        </el-form-item>
+        <el-form-item label="手机号" :label-width="formLabelWidth" prop="phone">
+          <el-input v-model="formEdit.phone" autocomplete="off"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="resetForm(ruleFormRef)">Cancel</el-button>
+        <el-button type="primary" @click="submitEdit(ruleFormRef)">
+          Confirm
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+    <!--    分配角色对话框-->
+    <el-dialog v-model="dialogFormVisibleCHARACTERS" title="分配权限">
+      <el-form :model="formCHARACTERS" ref="ruleFormRef">
+        <el-form-item label="当前的用户:" :label-width="formLabelWidth">
+          <span>{{ formCHARACTERS.account }}</span>
+        </el-form-item>
+        <el-form-item label="当前的角色:" :label-width="formLabelWidth">
+          <span>{{ formCHARACTERS.role_name }}</span>
+        </el-form-item>
+        <el-form-item label="分配新角色:" :label-width="formLabelWidth">
+          <el-select v-model="formCHARACTERS.New_Roles" clearable placeholder="请选择">
+            <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="resetForm(ruleFormRef)">Cancel</el-button>
+        <el-button type="primary" @click="submitRoles(ruleFormRef)">
           Confirm
         </el-button>
       </span>
@@ -134,6 +188,8 @@ const background = ref(false)
 const disabled = ref(false)
 // 对话框
 const dialogFormVisible = ref(false)
+const dialogFormVisibleEdit = ref(false)
+const dialogFormVisibleCHARACTERS = ref(false)
 const formLabelWidth = '140px'
 const ruleFormRef = ref<FormInstance>()
 const form = reactive({
@@ -143,6 +199,7 @@ const form = reactive({
   phone: ''
 })
 // 校验表单
+// @ts-ignore
 const validateAccount = (rule: any, value: any, callback: any) => {
   let reg = /^[\w-]{4,16}$/
   if (value === '') {
@@ -160,6 +217,7 @@ const validateAccount = (rule: any, value: any, callback: any) => {
     callback(new Error('用户名长度要在4到16个字符'))
   }
 }
+// @ts-ignore
 const validatePass = (rule: any, value: any, callback: any) => {
   let reg = /^\S*(?=\S{6,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/
   if (value === '') {
@@ -177,6 +235,7 @@ const validatePass = (rule: any, value: any, callback: any) => {
     callback(new Error('密码长度要6到18位'))
   }
 }
+// @ts-ignore
 const validateMailbox = (rule: any, value: any, callback: any) => {
   let reg = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   if (value === '') {
@@ -194,6 +253,7 @@ const validateMailbox = (rule: any, value: any, callback: any) => {
     callback(new Error('例如：3303223115@qq.com 或 xx3303223115@126.com 格式'))
   }
 }
+// @ts-ignore
 const validatePhone = (rule: any, value: any, callback: any) => {
   let reg = /^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[1589]))\d{8}$/
   if (value === '') {
@@ -218,6 +278,8 @@ const rules = reactive<FormRules<typeof form>>({
   phone: [{validator: validatePhone, trigger: 'change'}],
 })
 
+let arr: User[] = []
+
 function request() {
   http.get('users', {
     params: {
@@ -227,6 +289,7 @@ function request() {
   }).then((res: any) => {
     // console.log(res.data.data.users)
     tableData = res.data.data.users
+    arr = tableData
     dataSour.value = tableData
   })
 }
@@ -234,12 +297,44 @@ function request() {
 request()
 
 interface User {
+  id: number
   username: string
   email: string
   mobile: string
   role_name: string
   mg_state: boolean
 }
+
+// 编辑
+const formEdit = reactive({
+  id: 0,
+  account: '',
+  mailbox: '',
+  phone: '',
+  state: false
+})
+const rulesEdit = reactive<FormRules<typeof formEdit>>({
+  mailbox: [{validator: validateMailbox, trigger: 'change'}],
+  phone: [{validator: validatePhone, trigger: 'change'}],
+})
+// 分配角色
+const formCHARACTERS = reactive({
+  id: 0,
+  rid: 0,
+  account: '',
+  role_name: '',
+  New_Roles: '',
+})
+const options = [
+  {
+    value: 'test',
+    label: 'test',
+  },
+  {
+    value: '超级管理员',
+    label: '超级管理员',
+  }
+]
 
 const AddUser = (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -266,14 +361,113 @@ const AddUser = (formEl: FormInstance | undefined) => {
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+  dialogFormVisibleCHARACTERS.value = false
+  dialogFormVisibleEdit.value = false
   dialogFormVisible.value = false
 }
 // 表格
-const handleEdit = (index: number, row: User) => {
-  console.log(index, row)
+const UpdateStatus = (row: User) => {
+  http.put(`users/${row.id}/state/${row.mg_state}`).then((res: any) => {
+    formCHARACTERS.rid = res.data.data.rid
+    ElMessage.success(res.data.meta.msg)
+  })
 }
+// @ts-ignore
+const handleEdit = (index: number, row: User) => {
+  dialogFormVisibleEdit.value = true
+  // console.log(index, row)
+  formEdit.account = row.username
+  formEdit.mailbox = row.email
+  formEdit.phone = row.mobile
+  formEdit.id = row.id
+  formEdit.state = row.mg_state
+}
+const submitEdit = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate((valid) => {
+    if (valid) {
+      http.put(`users/${formEdit.id}`, {
+        id: formEdit.id,
+        email: formEdit.mailbox,
+        mobile: formEdit.phone
+      }).then((res: any) => {
+        console.log(res)
+        formCHARACTERS.rid = res.data.data.role_id
+        console.log(formCHARACTERS.rid)
+        ElMessage.success(res.data.meta.msg)
+        request()
+      })
+      dialogFormVisibleEdit.value = false
+      console.log('submit!')
+    } else {
+      console.log('error submit!')
+      return false
+    }
+  })
+}
+// @ts-ignore
 const handleDelete = (index: number, row: User) => {
-  console.log(index, row)
+  // console.log(index, row)
+  http.delete(`users/${row.id}`, {
+    id: row.id
+  }).then((res: any) => {
+    ElMessage.success(res.data.meta.msg)
+    request()
+  })
+}
+const Roles = (row: User) => {
+  console.log(row)
+  formCHARACTERS.id = row.id
+  formCHARACTERS.account = row.username
+  formCHARACTERS.role_name = row.role_name
+  dialogFormVisibleCHARACTERS.value = true
+}
+const submitRoles = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate((valid) => {
+    if (valid) {
+      http.put(`users/${formCHARACTERS.id}/role`, {
+        id: formCHARACTERS.id,
+        rid: formCHARACTERS.rid
+      }).then((res: any) => {
+        console.log(res)
+        if (res.data.meta.status === 200) {
+          formCHARACTERS.rid = res.data.data.rid
+          formCHARACTERS.role_name = formCHARACTERS.New_Roles
+          ElMessage.success(res.data.meta.msg)
+          request()
+        } else {
+          ElMessage.error(res.data.meta.msg)
+        }
+      })
+      dialogFormVisibleCHARACTERS.value = false
+      console.log('submit!')
+    } else {
+      console.log('error submit!')
+      return false
+    }
+  })
+}
+const searchAccount = () => {
+  if (searchVal.value === '') return dataSour.value = arr
+  tableData.forEach((item: any) => {
+    if (item.username === searchVal.value) {
+      http.get(`users/${item.id}`, {
+        params: {
+          id: item.id
+        }
+      }).then((res: any) => {
+        // console.log(res)
+        if (res.data.meta.status === 200) {
+          ElMessage.success(res.data.meta.msg)
+          tableData = [res.data.data]
+          dataSour.value = tableData
+        } else {
+          ElMessage.error(res.data.meta.msg)
+        }
+      })
+    }
+  })
 }
 // 分页器
 const handleSizeChange = (val: number) => {
