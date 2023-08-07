@@ -93,7 +93,7 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 // 登录
 const login = () => {
   Axios({
-    mehtod: 'post', url: 'login', params: {
+    method: 'post', url: 'login', params: {
       username: ruleForm.age,
       password: ruleForm.pass,
       headers: {

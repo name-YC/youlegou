@@ -50,6 +50,13 @@ const GoTo = (path: string) => {
   Router.push(path)
   localStorage.removeItem('token')
 }
+const fullScreen = () => {
+  // documentElement 属性以一个元素对象返回一个文档的文档元素
+  var el = document.documentElement
+  // console.log(el)
+  el.requestFullscreen || el.mozRequestFullScreen || el.webkitRequestFullscreen || el.msRequestFullScreen ?
+    el.requestFullscreen() || el.mozRequestFullScreen() || el.webkitRequestFullscreen() || el.msRequestFullscreen() : null
+}
 </script>
 
 <style lang="less" scoped>
