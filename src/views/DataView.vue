@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import {ref} from 'vue';
 import {mapState , useStore} from 'vuex'
-import Tendency from '../components/ECharts/Tendency.vue'
-import Map from '../components/ECharts/Map.vue'
-import MerchantSales from '../components/ECharts/MerchantSales.vue'
-import RegionalSales from '../components/ECharts/RegionalSales.vue'
-import Distribution from '../components/ECharts/Distribution.vue'
-import SalesRanking from '../components/ECharts/SalesRanking.vue'
+import Tendency from '../components/EChartsC/Tendency.vue'
+import Map from '../components/EChartsC/Map.vue'
+import MerchantSales from '../components/EChartsC/MerchantSales.vue'
+import RegionalSales from '../components/EChartsC/RegionalSales.vue'
+import Distribution from '../components/EChartsC/Distribution.vue'
+import SalesRanking from '../components/EChartsC/SalesRanking.vue'
 const flag = ref(true);
 const store = useStore()
 const Toggle = ()=>{

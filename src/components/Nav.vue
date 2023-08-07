@@ -50,7 +50,7 @@
         </template>
         <el-menu-item index="/index/orderManagement/orderList">商品列表</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="/dataView">
+      <el-menu-item index="/index/dataView">
         <el-icon>
           <HomeFilled />
         </el-icon>
