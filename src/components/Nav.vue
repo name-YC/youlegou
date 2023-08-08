@@ -62,9 +62,9 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import {
-  HomeFilled, UserFilled
-} from '@element-plus/icons-vue'
+// import {
+//   HomeFilled, UserFilled
+// } from '@element-plus/icons-vue'
 // 1.变量名称必须要与ref 命名的属性名称一致2.通过hello.value的形式获取 DOM 元素3.必须要在 DOM渲染完成后才可以获取 hello.value，否则就是null。
 const pic: any = ref(null)
 const isCollapse = ref(false)

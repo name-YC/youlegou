@@ -30,17 +30,12 @@ export default {
 // @ts-ignore
 import { useRouter } from 'vue-router'
 // @ts-ignore
-<<<<<<< HEAD
-import { ref, reactive, getCurrentInstance } from 'vue'
-import type { FormInstance, FormRules, } from 'element-plus'
-=======
 import { useStore } from 'vuex'
 // @ts-ignore
 import { ref, reactive, getCurrentInstance } from 'vue'
 // @ts-ignore
 import type { FormInstance, FormRules, } from 'element-plus'
 // @ts-ignore
->>>>>>> a4e0497adfdf8c0fb3dd990bd509ec058242fd6a
 import { ElMessage, ElLoading } from 'element-plus'
 // @ts-ignore
 import { UserFilled, Lock } from '@element-plus/icons-vue'
@@ -99,6 +94,7 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 })
 // 登录
 const login = () => {
+  
   Axios({
     mehtod: 'post', url: 'login', params: {
       username: ruleForm.age,
