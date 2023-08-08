@@ -12,10 +12,13 @@ axios.interceptors.request.use(
       // console.log('拦截器')
       if (config.headers['X-Skip-Interceptor']) {
         console.log('跳过拦截器')
-        return config;
+        return config
       }
+      console.log(token)
       config.headers.Authorization = token
-    } 
+    } else {
+      config.headers.token = localStorage.getItem('token')
+    }
     return config
   },
   (error) => {

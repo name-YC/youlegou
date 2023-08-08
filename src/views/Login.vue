@@ -30,8 +30,17 @@ export default {
 // @ts-ignore
 import { useRouter } from 'vue-router'
 // @ts-ignore
+<<<<<<< HEAD
 import { ref, reactive, getCurrentInstance } from 'vue'
 import type { FormInstance, FormRules, } from 'element-plus'
+=======
+import { useStore } from 'vuex'
+// @ts-ignore
+import { ref, reactive, getCurrentInstance } from 'vue'
+// @ts-ignore
+import type { FormInstance, FormRules, } from 'element-plus'
+// @ts-ignore
+>>>>>>> a4e0497adfdf8c0fb3dd990bd509ec058242fd6a
 import { ElMessage, ElLoading } from 'element-plus'
 // @ts-ignore
 import { UserFilled, Lock } from '@element-plus/icons-vue'
@@ -43,6 +52,8 @@ const Axios = Vue.appContext.config.globalProperties.$axios
 const fullscreenLoading = ref(false)
 // router
 const Router = useRouter()
+// store
+const Store = useStore()
 const ruleFormRef = ref<FormInstance>()
 // 表单用户名验证
 const checkAge = (rule: any, value: any, callback: any) => {
@@ -104,6 +115,7 @@ const login = () => {
         message: '登陆成功',
         type: 'success',
       })
+      Store.commit('setUsername',res.data.data.username)
       localStorage.setItem('token', res.data.data.token)
       Router.push('/index')
     } else {

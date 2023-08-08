@@ -6,7 +6,11 @@
       <span>Version：0.0.0</span>
     </div>
     <div class="right">
+<<<<<<< HEAD
       <div class="user">欢迎你：{{ }}</div>
+=======
+      <div class="user">欢迎你：{{ username }}</div>
+>>>>>>> a4e0497adfdf8c0fb3dd990bd509ec058242fd6a
       <img class="fullScreen" src="/img/fullscreen.png" alt="">
       <el-dropdown>
         <span class="el-dropdown-link">
@@ -35,12 +39,37 @@ export default {
 <script lang="ts" setup>
 // @ts-ignore
 import { useRouter } from 'vue-router'
+<<<<<<< HEAD
 import { ArrowDown } from '@element-plus/icons-vue'
 const Router = useRouter()
 const GoTo = (path:string) => {
   Router.push(path)
   localStorage.removeItem('token')
 }
+=======
+// @ts-ignore
+import { ArrowDown } from '@element-plus/icons-vue'
+// @ts-ignore
+import { useStore } from 'vuex'
+// vuex
+const Store = useStore()
+// Router
+const Router = useRouter()
+// 用户名
+const username = Store.state.username
+
+const GoTo = (path: string) => {
+  Router.push(path)
+  localStorage.removeItem('token')
+}
+const fullScreen = () => {
+  // documentElement 属性以一个元素对象返回一个文档的文档元素
+  var el = document.documentElement
+  // console.log(el)
+  el.requestFullscreen || el.mozRequestFullScreen || el.webkitRequestFullscreen || el.msRequestFullScreen ?
+    el.requestFullscreen() || el.mozRequestFullScreen() || el.webkitRequestFullscreen() || el.msRequestFullscreen() : null
+}
+>>>>>>> a4e0497adfdf8c0fb3dd990bd509ec058242fd6a
 </script>
 
 <style lang="less" scoped>
@@ -94,6 +123,14 @@ const GoTo = (path:string) => {
       padding-right: 8px;
     }
 
+<<<<<<< HEAD
+=======
+    /deep/.el-dropdown-link {
+      display: flex;
+      align-items: center;
+    }
+
+>>>>>>> a4e0497adfdf8c0fb3dd990bd509ec058242fd6a
     .avatar {
       width: 56px;
       height: 56px;
