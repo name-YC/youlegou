@@ -1,11 +1,18 @@
 import axios from 'axios'
 
 // 根路径
-axios.defaults.baseURL = 'http://127.0.0.1:8802/api/private/v1/'
+//  axios.defaults.baseURL =
+// axios.defaults.baseURL = 'http://localhost:8801'
+
+const  requests = axios.create({
+    baseURL: 'http://127.0.0.1:8802/api/private/v1/',   //引入接口
+    timeout: 20000,
+});
+
 // 请求超时
 // axios.defaults.timeout = 5000 // 超时时间
 
-axios.interceptors.request.use(
+requests.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
     if (token) {
@@ -15,7 +22,7 @@ axios.interceptors.request.use(
         return config;
       }
       config.headers.Authorization = token
-    } 
+    }
     return config
   },
   (error) => {
@@ -24,4 +31,4 @@ axios.interceptors.request.use(
   }
 )
 
-export default axios
+export default requests
