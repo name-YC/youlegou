@@ -48,9 +48,9 @@
           </el-icon>
           <span>订单管理</span>
         </template>
-        <el-menu-item index="/index/orderManagement/orde  rList">订单列表</el-menu-item>
+        <el-menu-item index="/index/orderManagement/orderList">商品列表</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="/dataView">
+      <el-menu-item index="/index/dataView">
         <el-icon>
           <HomeFilled />
         </el-icon>
@@ -62,9 +62,9 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
-import {
-  HomeFilled, UserFilled
-} from '@element-plus/icons-vue'
+// import {
+//   HomeFilled, UserFilled
+// } from '@element-plus/icons-vue'
 // 1.变量名称必须要与ref 命名的属性名称一致2.通过hello.value的形式获取 DOM 元素3.必须要在 DOM渲染完成后才可以获取 hello.value，否则就是null。
 const pic: any = ref(null)
 const isCollapse = ref(false)
@@ -85,22 +85,25 @@ const handoff = () => {
   }
 }
 onMounted(() => {
-  console.log(pic.value)
+  // console.log(pic.value)
 })
 </script>
 
 <style lang="less" scoped>
 .nav {
   // width: 250px;
+  height: calc(100vh - 75px);
 }
 
-.el-menu-vertical-demo:not(.el-menu--collapse){
+.el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 250px;
-  height: 100%;
+  height: calc(100% - 30px);
 }
-/deep/ .el-menu--collapse{
-  height: 100%;
+
+/deep/ .el-menu--collapse {
+  height: calc(100% - 30px);
 }
+
 /deep/.el-radio-group {
   height: 30px;
   background-color: #4a5064;
